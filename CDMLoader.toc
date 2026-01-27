@@ -1,6 +1,6 @@
 ## Interface: 120000  
 ## Title: Cooldown Manager Loader
-## Notes: Saves and loads advanced cooldown management settings across characters.
+## Notes: Saves and loads advanced cooldown manager settings across characters.
 ## SavedVariables: CDMLoaderDB
 ## Version: v1.0
 ## Author: lith1995
