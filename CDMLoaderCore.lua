@@ -7,18 +7,35 @@ local ACD = LibStub("AceConfigDialog-3.0")
 
 local defaults = {
 	profile = {
-		CDMLayout = {}
+		CDMLayout = {},
+		autoLoadCDMLayout = false
+	},
+}
+local options = {
+	name = "CDMLoader",
+	handler = CDMLoader,
+	type = "group",
+	args = {
+		autoLoadCDMLayout = {
+			type = "toggle",
+			name = "Auto-load layout",
+			desc = "|cffFF0000EXPERIMENTAL|r\nAutomatically load the saved Cooldown Manager layout on login.",
+			get = "IsAutoLoad",
+			set = "SetAutoLoad"
+		},
 	},
 }
 
 function CDMLoader:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("CDMLoaderDB", defaults, true)
+	AC:RegisterOptionsTable("CDMLoader_options", options)
+	self.optionsFrame = ACD:AddToBlizOptions("CDMLoader_options", "CDMLoader")
 
 	local profiles = LibStub("AceDBOptions-3.0"):GetOptionsTable(self.db)
 	AC:RegisterOptionsTable("CDMLoaderProfiles", profiles)
-	ACD:AddToBlizOptions("CDMLoaderProfiles", "CDMLoader")
+	ACD:AddToBlizOptions("CDMLoaderProfiles", "Profiles", "CDMLoader")
 
-
+	self:RegisterEvent("PLAYER_LOGIN", "IsLayoutUpToDate")
     self:RegisterChatCommand("cdm", "SlashCommand")
 end
 
@@ -49,3 +66,10 @@ function CDMLoader:SlashCommand(msg)
 end
 
 
+function CDMLoader:IsAutoLoad(info)
+	return self.db.profile.autoLoadCDMLayout
+end
+
+function CDMLoader:SetAutoLoad(info, value)
+	self.db.profile.autoLoadCDMLayout = value
+end

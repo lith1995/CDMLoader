@@ -7,6 +7,28 @@ local CooldownViewer = _G.C_CooldownViewer
 local playerUnit = "player"
 
 
+
+function CDMLoader:IsLayoutUpToDate()
+	local _, _, ClassID = UnitClass(playerUnit)
+	local isCDMAVailable, CDMError = CooldownViewer.IsCooldownViewerAvailable()
+
+	if isCDMAVailable then
+		local importString = self.db.profile.CDMLayout[ClassID]
+		local currentLayout = CooldownViewer.GetLayoutData()
+		if importString and importString ~= currentLayout then
+			if self.db.profile.autoLoadCDMLayout then
+				CooldownViewer.SetLayoutData(importString)
+				self:Print("Cooldown Manager Layout Loaded.")
+			else
+				self:Print("|cffFF0000Cooldown Manager Layout is outdated use \"/cdm load\" to update it.|r")
+				return
+			end
+		end
+	else
+		self:Print("Cooldown Viewer is not available: " .. CDMError)
+	end
+end
+
 function CDMLoader:LoadCDMLayout()
 	if InCombat() then
 		self:Print("Cannot load layout while in combat.")
@@ -14,9 +36,18 @@ function CDMLoader:LoadCDMLayout()
 	end
 	local _, _, ClassID = UnitClass(playerUnit)
 	local isCDMAVailable, CDMError = CooldownViewer.IsCooldownViewerAvailable()
+
+
 	if isCDMAVailable then
-		if self.db.profile.CDMLayout[ClassID] then
-			local importString = self.db.profile.CDMLayout[ClassID]
+		local importString = self.db.profile.CDMLayout[ClassID]
+		local currentLayout = CooldownViewer.GetLayoutData()
+		
+		if importString == currentLayout then
+			self:Print("Cooldown Manager Layout is already up to date.")
+			return
+		end
+
+		if importString then
 			CooldownViewer.SetLayoutData(importString)
 			Reload()
 			self:Print("Cooldown Manager Layout Loaded.")
