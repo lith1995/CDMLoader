@@ -1,0 +1,74 @@
+<Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
+  <Script file="CDMLoader.lua"/>
+  
+  <Button name="CDMSaveTab" parent="CooldownViewerSettings">  
+    <Size x="43" y="55"/>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="Background" atlas="questlog-tab-side" useAtlasSize="true">
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" file="Interface\AddOns\CDMLoader\media\save_icon.tga"> 
+          <Size x="36" y="36"/>
+          <Anchors>
+            <Anchor point="CENTER" x="-2"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="HIGHLIGHT">
+        <Texture atlas="QuestLog-Tab-side-Glow-hover" useAtlasSize="true">
+          <Anchors> 
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Anchors>
+      <Anchor point="TOP" relativeKey="$parent.AurasTab" relativePoint="BOTTOM" x="0" y="-3"/>  
+    </Anchors>
+    <Scripts>
+      <OnClick>CDMLoader:SaveCDMLayout()</OnClick>  
+    </Scripts>
+  
+  </Button>
+    <Button name="CDMLoadTab" parent="CooldownViewerSettings"> 
+    <Size x="43" y="61"/>
+    <Layers>
+      <Layer level="BACKGROUND">
+        <Texture parentKey="Background" atlas="questlog-tab-side" useAtlasSize="true">
+          <Anchors>
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="ARTWORK">
+        <Texture parentKey="Icon" file="Interface\AddOns\CDMLoader\media\load_icon.tga">  
+          <Size x="36" y="36"/>
+          <Anchors>
+            <Anchor point="CENTER" x="-2"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+      <Layer level="HIGHLIGHT">
+        <Texture atlas="QuestLog-Tab-side-Glow-hover" useAtlasSize="true">
+          <Anchors> 
+            <Anchor point="CENTER"/>
+          </Anchors>
+        </Texture>
+      </Layer>
+    </Layers>
+    <Anchors>
+      <Anchor point="TOP" relativeKey="$parent.AurasTab" relativePoint="BOTTOM" x="0" y="-61"/>  
+    </Anchors>
+    <Scripts>
+      <OnClick>CDMLoader:LoadCDMLayout()</OnClick>  
+    </Scripts>
+  </Button>
+</Ui>
+
+
+

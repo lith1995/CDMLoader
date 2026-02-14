@@ -40,7 +40,7 @@ function ADDON:OnInitialize()
 end
 
 function ADDON:OnEnable()
-	-- Called when the addon is enabled
+	-- ADDON:InitializeButtons()
 end
 
 function ADDON:OnDisable()
