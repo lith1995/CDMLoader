@@ -19,6 +19,7 @@ Libs\LibStub\LibStub.lua
 
 CDMLoaderCore.lua
 CDMLoader.lua
+CDMLoaderUI.lua
 CDMLoaderUI.xml
 
 
