@@ -1,6 +1,6 @@
-local ADDON, _ = ...
-local CDMLoader = LibStub("AceAddon-3.0"):NewAddon(ADDON, "AceConsole-3.0", "AceEvent-3.0")
-_G[ADDON] = CDMLoader -- store reference to addon
+local ADDON_NAME, _ = ...
+local ADDON = LibStub("AceAddon-3.0"):NewAddon(ADDON_NAME, "AceConsole-3.0", "AceEvent-3.0")
+_G[ADDON_NAME] = ADDON -- store reference to addon
 
 local AC = LibStub("AceConfig-3.0")
 local ACD = LibStub("AceConfigDialog-3.0")
@@ -13,7 +13,7 @@ local defaults = {
 }
 local options = {
 	name = "CDMLoader",
-	handler = CDMLoader,
+	handler = ADDON,
 	type = "group",
 	args = {
 		autoLoadCDMLayout = {
@@ -26,7 +26,7 @@ local options = {
 	},
 }
 
-function CDMLoader:OnInitialize()
+function ADDON:OnInitialize()
     self.db = LibStub("AceDB-3.0"):New("CDMLoaderDB", defaults, true)
 	AC:RegisterOptionsTable("CDMLoader_options", options)
 	self.optionsFrame = ACD:AddToBlizOptions("CDMLoader_options", "CDMLoader")
@@ -39,15 +39,15 @@ function CDMLoader:OnInitialize()
     self:RegisterChatCommand("cdm", "SlashCommand")
 end
 
-function CDMLoader:OnEnable()
+function ADDON:OnEnable()
 	-- Called when the addon is enabled
 end
 
-function CDMLoader:OnDisable()
+function ADDON:OnDisable()
     -- Called when the addon is disabled
 end
 
-function CDMLoader:SlashCommand(msg)
+function ADDON:SlashCommand(msg)
 	if msg == "load" then
 		self:LoadCDMLayout()
 	elseif msg == "save" then
@@ -66,10 +66,10 @@ function CDMLoader:SlashCommand(msg)
 end
 
 
-function CDMLoader:IsAutoLoad(info)
+function ADDON:IsAutoLoad(info)
 	return self.db.profile.autoLoadCDMLayout
 end
 
-function CDMLoader:SetAutoLoad(info, value)
+function ADDON:SetAutoLoad(info, value)
 	self.db.profile.autoLoadCDMLayout = value
 end

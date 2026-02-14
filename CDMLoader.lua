@@ -1,5 +1,5 @@
-local ADDON, _ = ...
-local CDMLoader = LibStub("AceAddon-3.0"):GetAddon(ADDON)
+local ADDON_NAME, _ = ...
+local ADDON = LibStub("AceAddon-3.0"):GetAddon(ADDON_NAME)
 local InCombat = InCombatLockdown
 local Reload = C_UI.Reload
 local CooldownViewerSettings = _G.CooldownViewerSettings
@@ -8,7 +8,7 @@ local playerUnit = "player"
 
 
 
-function CDMLoader:IsLayoutUpToDate()
+function ADDON:IsLayoutUpToDate()
 	local _, _, ClassID = UnitClass(playerUnit)
 	local isCDMAVailable, CDMError = CooldownViewer.IsCooldownViewerAvailable()
 
@@ -29,7 +29,7 @@ function CDMLoader:IsLayoutUpToDate()
 	end
 end
 
-function CDMLoader:LoadCDMLayout()
+function ADDON:LoadCDMLayout()
 	if InCombat() then
 		self:Print("Cannot load layout while in combat.")
 		return
@@ -59,7 +59,7 @@ function CDMLoader:LoadCDMLayout()
 	end
 end
 
-function CDMLoader:SaveCDMLayout()
+function ADDON:SaveCDMLayout()
 	if InCombat() then
 		self:Print("Cannot save layout while in combat.")
 		return
@@ -75,7 +75,7 @@ function CDMLoader:SaveCDMLayout()
 	end
 end
 
-function CDMLoader:OpenCDMSettings()
+function ADDON:OpenCDMSettings()
 	if InCombat() or not CooldownViewerSettings then return end
 	if not CooldownViewerSettings:IsShown() then
 		CooldownViewerSettings:Show()
