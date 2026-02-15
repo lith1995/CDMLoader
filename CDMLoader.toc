@@ -5,6 +5,8 @@
 ## Version: v1.4.0
 ## Author: lith1995
 ## Category: User Interface
+## X-Curse-Project-ID: 1442994
+## X-Wago-ID: qGYZBENg
 
 Libs\AceAddon-3.0\AceAddon-3.0.xml
 Libs\AceEvent-3.0\AceEvent-3.0.xml

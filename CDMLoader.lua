@@ -67,8 +67,15 @@ function ADDON:SaveCDMLayout()
 	local _, _, ClassID = UnitClass(playerUnit)
 	local isCDMAVailable, CDMError = CooldownViewer.IsCooldownViewerAvailable()
 	if isCDMAVailable then
-		CDMLayout = CooldownViewer.GetLayoutData()
+		local isCooldownViewerSettingsOpen = CooldownViewerSettings:IsShown()
+		if isCooldownViewerSettingsOpen then
+			CooldownViewerSettings:Hide()
+		end
+		local CDMLayout = CooldownViewer.GetLayoutData()
 		self.db.profile.CDMLayout[ClassID] = CDMLayout
+		if isCooldownViewerSettingsOpen then
+			CooldownViewerSettings:Show()
+		end
 		self:Print("Cooldown Manager Layout Saved.")
 	else
 		self:Print("Cooldown Viewer is not available: " .. CDMError)
