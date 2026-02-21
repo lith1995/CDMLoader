@@ -1,8 +1,7 @@
 <Ui xmlns="http://www.blizzard.com/wow/ui/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.blizzard.com/wow/ui/ ..\FrameXML\UI.xsd">
-  
+<Script file="CDMLoaderUIButtonMixin.lua"/>
 <Button name="CDMTabButtonTemplate" virtual="true" mixin="CDMLoaderUIButtonMixin">
   <Size x="43" y="55"/>
-
   <Layers>
     <Layer level="BACKGROUND">
       <Texture parentKey="Background" atlas="questlog-tab-side" useAtlasSize="true">
@@ -31,37 +30,12 @@
   </Layers>
 
   <Scripts>
-    <OnLoad method="OnLoad"/>
     <OnEnter method="OnEnter"/>
+    <OnLeave method="OnLeave"/>
     <OnMouseDown method="OnMouseDown"/>
     <OnMouseUp method="OnMouseUp"/>
   </Scripts>
 </Button>
 
-<Button name="CDMSaveTab" parent="CooldownViewerSettings" inherits="CDMTabButtonTemplate">
-  <KeyValues>
-    <KeyValue key="tooltipText" value="Save your CDM layout" type="string"/>
-    <KeyValue key="iconFile" value="Interface\AddOns\CDMLoader\media\save_icon.tga" type="string"/>
-  </KeyValues>
-  <Anchors>
-    <Anchor point="TOP" relativeKey="$parent.AurasTab" relativePoint="BOTTOM" x="0" y="-3"/>
-  </Anchors>
-  <Scripts>
-    <OnClick method="Onclick_saveCDMLayout"/>
-  </Scripts>
-</Button>
-
-<Button name="CDMLoadTab" parent="CooldownViewerSettings" inherits="CDMTabButtonTemplate">
-  <KeyValues>
-    <KeyValue key="tooltipText" value="Load your CDM layout" type="string"/>
-    <KeyValue key="iconFile" value="Interface\AddOns\CDMLoader\media\load_icon.tga" type="string"/>
-  </KeyValues>
-  <Anchors>
-    <Anchor point="TOP" relativeKey="$parent.AurasTab" relativePoint="BOTTOM" x="0" y="-61"/>
-  </Anchors>
-  <Scripts>
-    <OnClick method="Onclick_loadCDMLayout"/>
-  </Scripts>
-</Button>
 </Ui>
 

@@ -40,7 +40,7 @@ function ADDON:OnInitialize()
 end
 
 function ADDON:OnEnable()
-	-- ADDON:InitializeButtons()
+	ADDON:InitCDMButtons()
 end
 
 function ADDON:OnDisable()

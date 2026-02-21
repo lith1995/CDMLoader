@@ -1,11 +1,9 @@
-local ADDON_NAME, _ = ...
-local ADDON = LibStub("AceAddon-3.0"):GetAddon(ADDON_NAME)
-
 CDMLoaderUIButtonMixin = {}
 
 
-function CDMLoaderUIButtonMixin:OnLoad()
-    if self.iconFile then
+function CDMLoaderUIButtonMixin:SetIcon(iconFile)
+	self.iconFile = iconFile
+	if self.iconFile then
         self.Icon:SetTexture(self.iconFile)
     end
 end
@@ -33,14 +31,4 @@ function CDMLoaderUIButtonMixin:OnLeave()
 	GetAppropriateTooltip():Hide();
 end
 
-function CDMLoaderUIButtonMixin:SetTextToFit(text)
-	self:SetText(text);
-	self:FitToText();
-end
 
-function CDMLoaderUIButtonMixin:Onclick_loadCDMLayout()
-	ADDON:LoadCDMLayout()
-end
-function CDMLoaderUIButtonMixin:Onclick_saveCDMLayout()
-	ADDON:SaveCDMLayout()
-end
