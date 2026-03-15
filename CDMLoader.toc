@@ -2,7 +2,7 @@
 ## Title: Cooldown Manager Loader
 ## Notes: Saves and loads advanced cooldown manager settings across characters.
 ## SavedVariables: CDMLoaderDB
-## Version: 1.4.4
+## Version: 1.5.0
 ## Author: lith1995
 ## Category: User Interface
 ## X-Curse-Project-ID: 1442994
@@ -21,8 +21,9 @@ Libs\AceConfig-3.0\AceConfig-3.0.xml
 
 CDMLoaderCore.lua
 CDMLoader.lua
+CDMButtons.lua
+Utils\ConfirmationDialog.lua
 UI\CDMLoaderUI.xml
-
 
 
 

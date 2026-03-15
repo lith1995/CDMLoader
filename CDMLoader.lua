@@ -6,40 +6,42 @@ local Reload = C_UI.Reload
 local CooldownViewerSettings = _G.CooldownViewerSettings
 local CooldownViewer = _G.C_CooldownViewer
 local playerUnit = "player"
-local IsAddOnLoaded = C_AddOns.IsAddOnLoaded
-
--- Create a button with the CDMLoaderUIButtonMixin and set its properties
-local function CreateCDMButton(name, tooltipText, iconFile, onClick, shift)
-	local buttonsize = 58
-	local offset = shift * buttonsize
-	local button = CreateFrame("Button", name, CooldownViewerSettings, "CDMTabButtonTemplate")
-	button:SetPoint("TOP", CooldownViewerSettings.AurasTab, "BOTTOM", 0, -3 - offset)
-	button.tooltipText = tooltipText
-	button:SetIcon("Interface/AddOns/CDMLoader/Media/ButtonIcons/" .. iconFile .. ".tga")
-	button:SetScript("OnClick", onClick)
-	return button
-end
 
 -- Helper to get CDM layout status and handle error printing
 local function GetCDMLayoutStatus(self)
 	local _, _, ClassID = UnitClass(playerUnit)
-	local isAvailable, errorMsg = CooldownViewer.IsCooldownViewerAvailable()
-	if not isAvailable then
-		self:Print("Cooldown Viewer is not available: " .. (errorMsg or "Unknown error"))
-		return nil, nil, nil, false
-	end
+
 	local importString = self.db.profile.CDMLayout[ClassID]
 	local currentLayout = CooldownViewer.GetLayoutData()
-	return importString, currentLayout, ClassID, true
+	local isUpToDate = importString and (importString == currentLayout)
+	return importString, currentLayout, ClassID, isUpToDate
+end
+
+local function IsCooldownViewerAvailable(self)
+	if InCombat() then
+		self:Print("|cffFF0000Cooldown Viewer is not available while in combat.")
+		return false
+	end
+	local isAvailable, errorMsg = CooldownViewer.IsCooldownViewerAvailable()
+	if not isAvailable then
+		self:Print("|cffFF0000Cooldown Viewer is not available: " .. (errorMsg or "Unknown error"))
+		return false
+	end
+	return true
+end
+
+local function load(self, importString)
+	CooldownViewer.SetLayoutData(importString)
+	Reload()
+	self:Print("Cooldown Manager Layout Loaded.")
 end
 
 function ADDON:IsLayoutUpToDate()
-		local importString, currentLayout, _, isAvailable = GetCDMLayoutStatus(self)
-		if not isAvailable then return end
-		if importString and importString ~= currentLayout then
+		if not IsCooldownViewerAvailable(self) then return end
+		local importString, _, _, isUpToDate = GetCDMLayoutStatus(self)
+		if not isUpToDate then
 			if self.db.profile.autoLoadCDMLayout then
-				CooldownViewer.SetLayoutData(importString)
-				self:Print("Cooldown Manager Layout Loaded.")
+				load(self, importString)
 			else
 				self:Print("|cffFF0000Cooldown Manager Layout is outdated use \"/cdm load\" to update it.|r")
 			end
@@ -47,55 +49,51 @@ function ADDON:IsLayoutUpToDate()
 end
 
 function ADDON:LoadCDMLayout()
-		if InCombat() then
-			self:Print("Cannot load layout while in combat.")
-			return
-		end
-		local importString, currentLayout, _, isAvailable = GetCDMLayoutStatus(self)
-		if not isAvailable then return end
-		if not importString then
-			self:Print("No saved layout found for your class.")
-			return
-		end
-		if importString == currentLayout then
-			self:Print("Cooldown Manager Layout is already up to date.")
-			return
-		end
-		CooldownViewer.SetLayoutData(importString)
-		Reload()
-		self:Print("Cooldown Manager Layout Loaded.")
+	if not IsCooldownViewerAvailable(self) then return end
+
+	local importString, _, _, isUpToDate = GetCDMLayoutStatus(self)
+	if not importString then
+		self:Print("No saved layout found for your class.")
+		return
+	end
+	if isUpToDate then
+		self:Print("Cooldown Manager Layout is already up to date.")
+		return
+	end
+	if self.db.profile.autoAcceptDialog then
+		load(self, importString)
+	else
+		ADDON:ConfirmDialog("Loading the saved layout will overwrite your current layout. Do you want to continue?", function() load(self, importString) end)
+	end	
+end
+
+local function save(self, currentLayout, ClassID)
+	self.db.profile.CDMLayout[ClassID] = currentLayout
+	self:Print("Cooldown Manager Layout Saved.")
 end
 
 function ADDON:SaveCDMLayout()
-		if InCombat() then
-			self:Print("Cannot save layout while in combat.")
-			return
+	if not IsCooldownViewerAvailable(self) then return end
+
+	local wasSettingsOpen = CooldownViewerSettings:IsShown()
+	if wasSettingsOpen then CooldownViewerSettings:Hide() end
+	local _, currentLayout, ClassID, isUpToDate = GetCDMLayoutStatus(self)
+	if isUpToDate then
+		self:Print("Saved Cooldown Manager Layout is already up to date.")
+	else
+		if self.db.profile.autoAcceptDialog then
+			save(self, currentLayout, ClassID)
+		else
+			ADDON:ConfirmDialog("Saving a new layout will overwrite your saved layout. Do you want to continue?", function() save(self, currentLayout, ClassID) end)
 		end
-		local _, _, ClassID, isAvailable = GetCDMLayoutStatus(self)
-		if not isAvailable then return end
-		local wasSettingsOpen = CooldownViewerSettings:IsShown()
-		if wasSettingsOpen then CooldownViewerSettings:Hide() end
-		self.db.profile.CDMLayout[ClassID] = CooldownViewer.GetLayoutData()
-		if wasSettingsOpen then CooldownViewerSettings:Show() end
-		self:Print("Cooldown Manager Layout Saved.")
+	end
+	if wasSettingsOpen then CooldownViewerSettings:Show() end
 end
 
 function ADDON:OpenCDMSettings()
-	if InCombat() or not CooldownViewerSettings then return end
+	if not IsCooldownViewerAvailable(self) then return end
 	if not CooldownViewerSettings:IsShown() then
 		CooldownViewerSettings:Show()
 	end
-end
-
-
-function ADDON:InitCDMButtons()
-	local shift = 0
-	if IsAddOnLoaded('CooldownManagerCentered') then
-		shift = shift + 1
-	end
-	
-	CreateCDMButton("SaveCDMButton", "Save your current CDM layout", "SaveIcon", function() ADDON:SaveCDMLayout() end, shift)
-	shift = shift + 1
-	CreateCDMButton("LoadCDMButton", "Load your saved CDM layout", "LoadIcon", function() ADDON:LoadCDMLayout() end, shift)
 end
 
