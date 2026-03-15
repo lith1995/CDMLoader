@@ -16,12 +16,26 @@ local options = {
 	handler = ADDON,
 	type = "group",
 	args = {
+		autoAcceptDialog = {
+			type = "toggle",
+			name = "Auto Accept Dialogs",
+			desc = "Automatically accept confirmation dialogs of save and load operations.",
+			get = "IsAutoAcceptDialog",
+			set = "SetAutoAcceptDialog",
+			order = 1,
+		},
+		linebreak1 = {
+			type = "description",
+			name = "",
+			order = 2,
+		},
 		autoLoadCDMLayout = {
 			type = "toggle",
 			name = "Auto-load layout",
 			desc = "|cffFF0000EXPERIMENTAL|r\nAutomatically load the saved Cooldown Manager layout on login.",
 			get = "IsAutoLoad",
-			set = "SetAutoLoad"
+			set = "SetAutoLoad",
+			order = 3,
 		},
 	},
 }
@@ -72,4 +86,12 @@ end
 
 function ADDON:SetAutoLoad(info, value)
 	self.db.profile.autoLoadCDMLayout = value
+end
+
+function ADDON:IsAutoAcceptDialog(info)
+	return self.db.profile.autoAcceptDialog
+end
+
+function ADDON:SetAutoAcceptDialog(info, value)
+	self.db.profile.autoAcceptDialog = value
 end
