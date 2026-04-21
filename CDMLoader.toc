@@ -1,8 +1,8 @@
-## Interface: 120001
+## Interface: 120001, 120005
 ## Title: Cooldown Manager Loader
 ## Notes: Saves and loads advanced cooldown manager settings across characters.
 ## SavedVariables: CDMLoaderDB
-## Version: 1.5.0
+## Version: 1.5.1
 ## Author: lith1995
 ## Category: User Interface
 ## X-Curse-Project-ID: 1442994
