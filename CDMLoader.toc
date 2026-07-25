@@ -2,7 +2,7 @@
 ## Title: Cooldown Manager Loader
 ## Notes: Saves and loads advanced cooldown manager settings across characters.
 ## SavedVariables: CDMLoaderDB
-## Version: 1.5.4
+## Version: 1.5.3
 ## Author: lith1995
 ## Category: User Interface
 ## X-Curse-Project-ID: 1442994
