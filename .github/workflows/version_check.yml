@@ -1,0 +1,43 @@
+name: Version check
+
+on:
+  pull_request:
+    branches: [main]
+
+jobs:
+  validate-version:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out PR branch
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Ensure PR version is not lower than main
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          pr_version=$(grep -E '^## Version:' CDMLoader.toc | head -n1 | sed 's/^## Version: //')
+          main_version=$(git show origin/main:CDMLoader.toc | grep -E '^## Version:' | head -n1 | sed 's/^## Version: //')
+
+          echo "PR version: $pr_version"
+          echo "main version: $main_version"
+
+          if ! python - <<'PY' "$pr_version" "$main_version"
+          import sys
+          from packaging.version import Version
+
+          pr = Version(sys.argv[1])
+          main = Version(sys.argv[2])
+
+          if pr < main:
+              print("PR version is lower than main version.")
+              sys.exit(1)
+          print("Version check passed.")
+          PY
+          then
+            echo "Version check failed."
+            exit 1
+          fi
