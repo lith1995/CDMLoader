@@ -7,6 +7,13 @@ local CooldownViewerSettings = _G.CooldownViewerSettings
 local CooldownViewer = _G.C_CooldownViewer
 local playerUnit = "player"
 
+-- Helper function to print messages if chat messages are not disabled
+local function PrintIfAllowed(self, msg)
+    if not self.db.profile.disableChatMessages then
+        self:Print(msg)
+    end
+end
+
 -- Helper to get CDM layout status and handle error printing
 local function GetCDMLayoutStatus(self)
 	local _, _, ClassID = UnitClass(playerUnit)
@@ -33,7 +40,7 @@ end
 local function load(self, importString)
 	CooldownViewer.SetLayoutData(importString)
 	Reload()
-	self:Print("Cooldown Manager Layout Loaded.")
+	PrintIfAllowed(self, "Cooldown Manager Layout Loaded.")
 end
 
 function ADDON:IsLayoutUpToDate()
@@ -43,7 +50,7 @@ function ADDON:IsLayoutUpToDate()
 			if self.db.profile.autoLoadCDMLayout then
 				load(self, importString)
 			else
-				self:Print("|cffFF0000Cooldown Manager Layout is outdated use \"/cdm load\" to update it.|r")
+				PrintIfAllowed(self, "|cffFF0000Cooldown Manager Layout is outdated use \"/cdm load\" to update it.|r")
 			end
 		end
 end
@@ -53,11 +60,11 @@ function ADDON:LoadCDMLayout()
 
 	local importString, _, _, isUpToDate = GetCDMLayoutStatus(self)
 	if not importString then
-		self:Print("No saved layout found for your class.")
+		PrintIfAllowed(self, "No saved layout found for your class.")
 		return
 	end
 	if isUpToDate then
-		self:Print("Cooldown Manager Layout is already up to date.")
+		PrintIfAllowed(self, "Cooldown Manager Layout is already up to date.")
 		return
 	end
 	if self.db.profile.autoAcceptDialog then
@@ -69,7 +76,7 @@ end
 
 local function save(self, currentLayout, ClassID)
 	self.db.profile.CDMLayout[ClassID] = currentLayout
-	self:Print("Cooldown Manager Layout Saved.")
+	PrintIfAllowed(self, "Cooldown Manager Layout Saved.")
 end
 
 function ADDON:SaveCDMLayout()
@@ -79,7 +86,7 @@ function ADDON:SaveCDMLayout()
 	if wasSettingsOpen then CooldownViewerSettings:Hide() end
 	local _, currentLayout, ClassID, isUpToDate = GetCDMLayoutStatus(self)
 	if isUpToDate then
-		self:Print("Saved Cooldown Manager Layout is already up to date.")
+		PrintIfAllowed(self, "Saved Cooldown Manager Layout is already up to date.")
 	else
 		if self.db.profile.autoAcceptDialog then
 			save(self, currentLayout, ClassID)
