@@ -44,7 +44,7 @@ jobs:
           set -euo pipefail
 
           version="${{ steps.version_change.outputs.new_version }}"
-          tag="v${version}"
+          tag="${version}"
 
           if git ls-remote --exit-code --tags origin "$tag" >/dev/null 2>&1; then
             echo "Tag $tag already exists; skipping."
