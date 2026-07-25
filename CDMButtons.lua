@@ -17,7 +17,9 @@ end
 function ADDON:InitCDMButtons()
 	local offsetX = 0
 	if IsAddOnLoaded('CooldownManagerCentered') then
-		offsetX = 61
+		local buttonSize = 58
+		local offsetMultiplier = 2
+		offsetX = buttonSize * offsetMultiplier
 	end
 	local save_button = CreateCDMButton("SaveCDMButton", "Save your current CDM layout", "SaveIcon", function() ADDON:SaveCDMLayout() end, CooldownViewerSettings.AurasTab, offsetX)
 	CreateCDMButton("LoadCDMButton", "Load your saved CDM layout", "LoadIcon", function() ADDON:LoadCDMLayout() end, save_button)
