@@ -1,32 +1,22 @@
 # description of this workflow, can be anything you want
 name: Package and release
 
-# we need to let GitHub know _when_ we want to release.
-# this is typically only when we create a new tag.
-# make sure your tags are annotated!
 on:
-  workflow_run:
-    workflows:
-      - 'tag-on-version-bump.yml'
-    types: [completed]
+  pull_request:
+    types: [closed]
+    branches: [main]
+    
+permissions:
+  contents: write
 
-# a workflow is built up as jobs, and within these jobs are steps
 jobs:
-
-  # "release" is a job, you can name it anything you want
   release:
-
-    # we can run our steps on pretty much anything, but the "ubuntu-latest" image is a safe bet
     runs-on: ubuntu-latest
 
-    # specify the environment variables used by the packager, matching the secrets for the project on GitHub
     env:
       CF_API_KEY: ${{ secrets.CF_API_KEY }}
       WAGO_API_TOKEN: ${{ secrets.WAGO_API_TOKEN }}
-      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}  # this secret is pre-provided for the workflow and does not
-                                                 # need to be added yourself, we just reference it here.
-
-    # "steps" holds a list of all the steps needed to package and release our AddOn
+      GITHUB_OAUTH: ${{ secrets.GITHUB_TOKEN }}  
     steps:
 
       # we first have to clone the AddOn project, this is a required step
@@ -35,6 +25,52 @@ jobs:
         with:
           fetch-depth: 0  # gets entire git history, needed for automatic changelogs
 
-      # once cloned, we just run the GitHub Action
+      # we then need to detect if the version has changed, this is done by comparing the version in the TOC file
+      - name: Detect version change
+        id: version_change
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          old_version=$(git show "${{ github.event.pull_request.base.sha }}:CDMLoader.toc" | grep -E '^## Version:' | head -n1 | sed 's/^## Version: //')
+          new_version=$(grep -E '^## Version:' CDMLoader.toc | head -n1 | sed 's/^## Version: //')
+
+          echo "old_version=$old_version" >> "$GITHUB_OUTPUT"
+          echo "new_version=$new_version" >> "$GITHUB_OUTPUT"
+
+          if [ "$old_version" != "$new_version" ]; then
+            echo "version_changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "version_changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      
+      # once we have detected a version change, we can create a tag for the new version
+      - name: Create tag
+        if: steps.version_change.outputs.version_changed == 'true'
+        id: create_tag
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          version="${{ steps.version_change.outputs.new_version }}"
+          tag="${version}"
+
+          if git ls-remote --exit-code --tags origin "$tag" >/dev/null 2>&1; then
+            echo "Tag $tag already exists; skipping."
+            echo "new_tag=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "$tag"
+          git push origin "$tag"
+          echo "new_tag=true" >> "$GITHUB_OUTPUT"
+
+      
+      
+      # once tagged, we just run the GitHub Action
       - name: Package and release
+        if: steps.create_tag.outputs.new_tag == 'true'
         uses: BigWigsMods/packager@master
