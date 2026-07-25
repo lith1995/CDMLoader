@@ -24,6 +24,14 @@ local options = {
 			set = "SetAutoAcceptDialog",
 			order = 1,
 		},
+		disableChatMessages = {
+			type = "toggle",
+			name = "Disable Chat Messages",
+			desc = "Disable chat messages when save or load operations are performed.",
+			get = "IsDisableChatMessages",
+			set = "SetDisableChatMessages",
+			order = 1,
+		},
 		linebreak1 = {
 			type = "description",
 			name = "",
@@ -36,7 +44,7 @@ local options = {
 			get = "IsAutoLoad",
 			set = "SetAutoLoad",
 			order = 3,
-		},
+		}
 	},
 }
 
@@ -94,4 +102,12 @@ end
 
 function ADDON:SetAutoAcceptDialog(info, value)
 	self.db.profile.autoAcceptDialog = value
+end
+
+function ADDON:IsDisableChatMessages(info)
+	return self.db.profile.disableChatMessages
+end
+
+function ADDON:SetDisableChatMessages(info, value)
+	self.db.profile.disableChatMessages = value
 end
