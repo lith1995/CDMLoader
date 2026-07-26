@@ -78,10 +78,9 @@ function ADDON:SlashCommand(msg)
 		self:OpenCDMSettings()
 	elseif msg == "help" then
 		self:Print("CDMLoader Commands:")
-		self:Print("/cdm load - Load CooldownViewer Layout")
-		self:Print("/cdm save - Save CooldownViewer Layout")
-		self:Print("/cdm - Open CooldownViewer Settings")
-		self:Print("/cdm help - Show this help message")
+		self:Print("load - Load CooldownViewer Layout")
+		self:Print("save - Save CooldownViewer Layout")
+		self:Print("help - Show this help message")
 	else
 		self:Print("Unknown command. Type /cdm help for a list of commands.")
 	end
