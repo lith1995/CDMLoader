@@ -59,6 +59,7 @@ function ADDON:OnInitialize()
 
 	self:RegisterEvent("PLAYER_LOGIN", "IsLayoutUpToDate")
     self:RegisterChatCommand("cdm", "SlashCommand")
+	self:RegisterChatCommand("cdl", "SlashCommand")
 end
 
 function ADDON:OnEnable()
