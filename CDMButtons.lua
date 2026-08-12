@@ -21,6 +21,6 @@ function ADDON:InitCDMButtons()
 		local offsetMultiplier = 2
 		offsetX = buttonSize * offsetMultiplier
 	end
-	local save_button = CreateCDMButton("SaveCDMButton", "Save your current CDM layout", "SaveIcon", function() ADDON:SaveCDMLayout() end, CooldownViewerSettings.AurasTab, offsetX)
+	local save_button = CreateCDMButton("SaveCDMButton", "Save your current CDM layout", "SaveIcon", function() ADDON:SaveCDMLayout() end, CooldownViewerSettings.GroupBuffsTab, offsetX)
 	CreateCDMButton("LoadCDMButton", "Load your saved CDM layout", "LoadIcon", function() ADDON:LoadCDMLayout() end, save_button)
 end
